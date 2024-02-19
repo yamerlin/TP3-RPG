@@ -8,7 +8,7 @@
 using namespace std;
 
 int main() {
-	cout << "Hello world";
+	cout << "TP3 RPG";
 
 	sf::Window window(sf::VideoMode(800, 600), "TP3 RPG");
     sf::Event event;
