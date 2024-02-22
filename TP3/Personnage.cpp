@@ -4,11 +4,50 @@
 
 using namespace std;
 
+void Personnage::initTexture()
+{
+	if (!this->texture.loadFromFile("Textures/joueur.png")) {
+		cout << "\nErreur chargement de la texture\n";
+	}
+}
+
+void Personnage::initSprite()
+{
+	this->sprite.setTexture(this->texture);
+
+	this->sprite.scale(0.4f, 0.4f); //originel : 140x190
+
+	//Centrer le point d'origine (la pos du perso)
+	this->sprite.setOrigin((this->sprite.getTexture()->getSize().x)/2.f, (this->sprite.getTexture()->getSize().y)/2.f);
+}
+
 Personnage::Personnage(int type, int nbPointDeVie, int nbPointAttaque, int nbPointDefense) {
 	this->type = type;
 	this->pointDeVie = nbPointDeVie;
 	this->pointAttaque = nbPointAttaque;
 	this->pointDefense = nbPointDefense;
+	this->vitesseDeplacement = 7.f;
+
+	this->initTexture();
+	this->initSprite();
+}
+
+Personnage::~Personnage()
+{
+}
+
+void Personnage::update()
+{
+}
+
+void Personnage::render(RenderTarget& target)
+{
+	target.draw(this->sprite);
+}
+
+void Personnage::bouger(const float dirX, const float dirY)
+{
+	this->sprite.move(this->vitesseDeplacement * dirX, this->vitesseDeplacement * dirY);
 }
 
 void Personnage::setType(int type) {
@@ -51,4 +90,9 @@ int Personnage::getPointAttaque() {
 
 int Personnage::getPointDefense() {
 	return this->pointDefense;
+}
+
+Vector2f Personnage::getPosition()
+{
+	return this->sprite.getPosition();
 }

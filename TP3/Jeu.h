@@ -1,11 +1,5 @@
 #pragma once
 
-#include "SFML/Graphics.hpp"
-#include "SFML/Audio.hpp"
-#include "SFML/System.hpp"
-#include "SFML/Window.hpp"
-#include "SFML/Network.hpp"
-
 #include "Personnage.h"
 
 using namespace std;
@@ -18,8 +12,13 @@ private:
 	VideoMode videoMode;
 	Event event;
 
+	Personnage* joueur;
+
 	void initVariables();
 	void initWindow();
+	void initJoueur();
+
+	
 
 public:
 	//Constructeur
@@ -31,6 +30,7 @@ public:
 	const bool running() const;
 
 	void updateEvent();
+	void updateInput();
 	void update();
 	void render();
 };
