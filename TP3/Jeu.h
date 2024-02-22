@@ -12,13 +12,20 @@ private:
 	VideoMode videoMode;
 	Event event;
 
+	Texture textureMonde;
+	Sprite spriteMonde;
+
 	Personnage* joueur;
+	Personnage* ennemi;
+	Personnage* tableauEnnemi[3];
+
+	int zoneDetectionCombatX; //En nombre de pixels
+	int zoneDetectionCombatY;
 
 	void initVariables();
 	void initWindow();
-	void initJoueur();
-
-	
+	void initPersonnages();
+	void initMonde();
 
 public:
 	//Constructeur
@@ -33,5 +40,7 @@ public:
 	void updateInput();
 	void update();
 	void render();
+	void renderMonde();
+	void detecterCombat();
 };
 

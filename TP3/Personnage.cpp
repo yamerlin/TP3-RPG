@@ -1,17 +1,40 @@
 #include "Personnage.h"
 #include <string>
 #include <iostream>
+#include <list>
 
 using namespace std;
 
-void Personnage::initTexture()
-{
-	if (!this->texture.loadFromFile("Textures/joueur.png")) {
-		cout << "\nErreur chargement de la texture\n";
-	}
+Personnage::Personnage(int type, int nbPointDeVie, int nbPointAttaque, int nbPointDefense, float spawnPosX, float spawnPosY) {
+	this->type = type;
+	this->pointDeVie = nbPointDeVie;
+	this->pointAttaque = nbPointAttaque;
+	this->pointDefense = nbPointDefense;
+	this->vitesseDeplacement = 7.f;
+
+	this->initTexture(type);
+	this->initSprite(spawnPosX, spawnPosY);
 }
 
-void Personnage::initSprite()
+void Personnage::initTexture(int type)
+{
+	//Texture du joueur
+	if (type == 0) {
+		if (!this->texture.loadFromFile("Textures/joueur.png")) {
+			cout << "\nErreur chargement de la texture\n";
+		}
+	}
+
+	//Texture des ennemis
+	if (type == 2) {
+		if (!this->texture.loadFromFile("Textures/ennemi.png")) {
+			cout << "\nErreur chargement de la texture\n";
+		}
+	}
+	
+}
+
+void Personnage::initSprite(float spawnPosX, float spawnPosY)
 {
 	this->sprite.setTexture(this->texture);
 
@@ -19,21 +42,9 @@ void Personnage::initSprite()
 
 	//Centrer le point d'origine (la pos du perso)
 	this->sprite.setOrigin((this->sprite.getTexture()->getSize().x)/2.f, (this->sprite.getTexture()->getSize().y)/2.f);
-}
 
-Personnage::Personnage(int type, int nbPointDeVie, int nbPointAttaque, int nbPointDefense) {
-	this->type = type;
-	this->pointDeVie = nbPointDeVie;
-	this->pointAttaque = nbPointAttaque;
-	this->pointDefense = nbPointDefense;
-	this->vitesseDeplacement = 7.f;
 
-	this->initTexture();
-	this->initSprite();
-}
-
-Personnage::~Personnage()
-{
+	sprite.setPosition(spawnPosX, spawnPosY);
 }
 
 void Personnage::update()
@@ -45,7 +56,7 @@ void Personnage::render(RenderTarget& target)
 	target.draw(this->sprite);
 }
 
-void Personnage::bouger(const float dirX, const float dirY)
+void Personnage::bougerJoueur(const float dirX, const float dirY)
 {
 	this->sprite.move(this->vitesseDeplacement * dirX, this->vitesseDeplacement * dirY);
 }

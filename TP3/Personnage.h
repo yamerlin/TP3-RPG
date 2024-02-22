@@ -19,19 +19,19 @@ private:
 
 	float vitesseDeplacement;
 
-	void initTexture();
-	void initSprite();
+	void initTexture(int type);
+	void initSprite(float spawnPosX, float spawnPosY);
 
 public:
 	Sprite sprite;
 	Texture texture;
 
-	Personnage(int type, int nbPointDeVie, int nbPointAttaque, int nbPointDefense);
-	~Personnage();
+	Personnage(int type, int nbPointDeVie, int nbPointAttaque, int nbPointDefense, float spawnPosX, float spawnPosY);
+
 
 	void update();
 	void render(RenderTarget& target);
-	void bouger(const float dirX, const float dirY);
+	void bougerJoueur(const float dirX, const float dirY);
 
 	void prendreDesDegats(int nbDegat);
 
