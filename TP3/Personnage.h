@@ -12,7 +12,7 @@ using namespace sf;
 class Personnage
 {
 private:
-	int type; //0 = player; 1 = allié; 2 = ennemies
+	int type; //0 = joueur; 1 = allié; 2 = ennemies
 	int pointDeVie;
 	int pointAttaque;
 	int pointDefense;
@@ -25,6 +25,7 @@ private:
 public:
 	Sprite sprite;
 	Texture texture;
+	bool combattu;
 
 	Personnage(int type, int nbPointDeVie, int nbPointAttaque, int nbPointDefense, float spawnPosX, float spawnPosY);
 

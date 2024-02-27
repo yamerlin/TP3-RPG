@@ -8,11 +8,17 @@
 using namespace std;
 using namespace sf;
 
-int main() {
-	cout << "TP3 RPG";
+void menu() {
+    cout << "TP3 RPG";
+}
 
-	//Créer le moteur de jeu
-    Jeu jeu;
+void jeu() {
+    //Horloge et deltatime pour rendre le jeu independant du framerate
+    Clock clock;
+    float dt = clock.restart().asSeconds();
+
+    //Créer le moteur de jeu
+    Jeu jeu(clock, dt);
 
     //Boucle de jeu
     //Faire tourner le programme tant que la fenêtre est ouverte
@@ -22,6 +28,12 @@ int main() {
 
         jeu.render();
     }
+}
+
+int main() {
+
+    menu();
+    jeu();	
 
 	return 0;
 }

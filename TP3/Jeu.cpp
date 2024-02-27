@@ -14,10 +14,10 @@ void Jeu::initVariables()
 
 void Jeu::initWindow()
 {
-	this->videoMode.height = 600;
+	this->videoMode.height = 800;
 	this->videoMode.width = 1000;
 	this->window = new RenderWindow(this->videoMode, "TP3 RPG", Style::Titlebar | Style::Close /*Style::Fullscreen*/);
-	this->window->setFramerateLimit(60);
+	//this->window->setFramerateLimit(5);
 	this->window->setVerticalSyncEnabled(false);
 }
 
@@ -43,12 +43,15 @@ void Jeu::initMonde()
 	this->spriteMonde.setTexture(this->textureMonde);
 }
 
-Jeu::Jeu()
+Jeu::Jeu(Clock clock, float dt)
 {
 	this->initVariables();
 	this->initWindow();
 	this->initMonde();
 	this->initPersonnages();
+	this->clock = clock;
+	this->dt = dt;
+	this->multiplieur = 60.f;
 }
 
 Jeu::~Jeu()
@@ -84,30 +87,25 @@ void Jeu::updateEvent()
 
 void Jeu::updateInput()
 {
+	//Mettre a jour delta time
+	dt = clock.restart().asSeconds();
+
+	//Faire bouger le joueur tout en le gardant dans les limites de la map
 	if (Keyboard::isKeyPressed(Keyboard::Left) && joueur->getPosition().x > 0 + ((joueur->sprite.getTexture()->getSize().x)/4.f) - 1.0 ) {
-		this->joueur->bougerJoueur(-1.f, 0.f);
+		this->joueur->bougerJoueur(-1.f * dt * multiplieur, 0.f);
 	}
 
 	if (Keyboard::isKeyPressed(Keyboard::Right) && joueur->getPosition().x < window->getSize().x - ((joueur->sprite.getTexture()->getSize().x) / 4.f) - 1.0) {
-		this->joueur->bougerJoueur(1.f, 0.f);
+		this->joueur->bougerJoueur(1.f * dt * multiplieur, 0.f);
 	}
 
 	if (Keyboard::isKeyPressed(Keyboard::Up) && joueur->getPosition().y > 0 + (joueur->sprite.getTexture()->getSize().y) / 4.f) {
-		this->joueur->bougerJoueur(0.f, -1.f);
+		this->joueur->bougerJoueur(0.f, -1.f * dt * multiplieur);
 	}
 
-	if (Keyboard::isKeyPressed(Keyboard::Down) && joueur->getPosition().y < window->getSize().y - ((joueur->sprite.getTexture()->getSize().y) / 4.f) + 5.0) {
-		this->joueur->bougerJoueur(0.f, 1.f);
+	if (Keyboard::isKeyPressed(Keyboard::Down) && joueur->getPosition().y < window->getSize().y - ((joueur->sprite.getTexture()->getSize().y) / 4.f) - 200.0) {
+		this->joueur->bougerJoueur(0.f, 1.f * dt * multiplieur);
 	}
-}
-
-void Jeu::update()
-{
-	this->updateEvent();
-	this->updateInput();
-	this->detecterCombat();
-
-	//cout << "X = " << to_string(joueur->getPosition().x) << "    Y = " << to_string(joueur->getPosition().y) << endl;
 }
 
 void Jeu::renderMonde()
@@ -125,25 +123,42 @@ void Jeu::detecterCombat()
 			&& joueur->getPosition().y > tableauEnnemi[i]->getPosition().y - zoneDetectionCombatY
 			&& joueur->getPosition().y < tableauEnnemi[i]->getPosition().y + zoneDetectionCombatY)
 		{
-			cout << "Combat !" << endl;
+			if (!tableauEnnemi[i]->combattu) {
+				cout << "Combat !" << endl;
+				tableauEnnemi[i]->combattu = true;
+			}
+			else {
+				cout << "Ennemi deja combattu !" << endl;
+			}
 		}
 	}
+}
+
+void Jeu::update()
+{
+	this->updateEvent();
+	this->updateInput();
+	this->detecterCombat();
+
+	//cout << "X = " << to_string(joueur->getPosition().x) << "    Y = " << to_string(joueur->getPosition().y) << endl;
 }
 
 void Jeu::render()
 {
 	this->window->clear();
 
-	//Faire spawner la map
+	//Faire afficher la map
 	this->renderMonde();
 
-	//Faire spawner les ennemis
+	//Faire afficher les ennemis
 	for (int i = 0; i < 3; i++) {
 		this->tableauEnnemi[i]->render(*this->window);
 	}
 	
-	//Faire spawner le joueur
+	//Faire afficher le joueur
 	this->joueur->render(*this->window);
 
 	this->window->display();
+
+	//cout << "dt: " << dt << endl;
 }

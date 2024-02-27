@@ -29,10 +29,14 @@ private:
 
 public:
 	//Constructeur
-	Jeu();
+	Jeu(Clock clock, float dt);
 
 	//Destructeur
 	~Jeu();
+
+	Clock clock;
+	float dt;
+	float multiplieur;
 
 	const bool running() const;
 

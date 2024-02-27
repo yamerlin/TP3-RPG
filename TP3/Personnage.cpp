@@ -11,6 +11,7 @@ Personnage::Personnage(int type, int nbPointDeVie, int nbPointAttaque, int nbPoi
 	this->pointAttaque = nbPointAttaque;
 	this->pointDefense = nbPointDefense;
 	this->vitesseDeplacement = 7.f;
+	this->combattu = false;
 
 	this->initTexture(type);
 	this->initSprite(spawnPosX, spawnPosY);
