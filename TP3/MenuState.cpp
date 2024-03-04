@@ -1,7 +1,10 @@
 #include "MenuState.h"
 #include "GameState.h"
 
+#include <iostream>
+
 using namespace sf;
+using namespace std;
 
 namespace TP3
 {
@@ -12,7 +15,18 @@ namespace TP3
 
 	void MenuState::init()
 	{
-		
+		if (!this->textureButton.loadFromFile("Textures/button.png")) {
+			cout << "\nErreur chargement de la texture du monde\n";
+		}
+
+		this->spriteButtonPlay.setTexture(this->textureButton);
+		this->spriteButtonLoad.setTexture(this->textureButton);
+		this->spriteButtonQuit.setTexture(this->textureButton);
+
+		this->spriteButtonPlay.setPosition(250, 20);
+		this->spriteButtonLoad.setPosition(250, 270);
+		this->spriteButtonQuit.setPosition(250, 520);
+
 	}
 
 	void MenuState::handleInput()
@@ -63,6 +77,10 @@ namespace TP3
 		this->gameData->window.clear();
 
 		this->gameData->window.draw(setBackgroundGradient());
+
+		this->gameData->window.draw(this->spriteButtonPlay);
+		this->gameData->window.draw(this->spriteButtonLoad);
+		this->gameData->window.draw(this->spriteButtonQuit);
 
 		this->gameData->window.display();
 	}

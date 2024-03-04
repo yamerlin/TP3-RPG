@@ -24,5 +24,11 @@ namespace TP3
 		Clock clock;
 
 		VertexArray setBackgroundGradient();
+
+		Texture textureButton;
+
+		Sprite spriteButtonPlay;
+		Sprite spriteButtonLoad;
+		Sprite spriteButtonQuit;
 	};
 }
