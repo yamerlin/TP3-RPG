@@ -61,32 +61,39 @@ namespace TP3
 		textPlay.setFont(font);
 		textSave.setFont(font);
 		textQuit.setFont(font);
+		textPauseMenu.setFont(font);
 
 		//Setter les texts
 		textPlay.setString("Return to game");
 		textSave.setString("Save and quit");
 		textQuit.setString("Quit");
+		textPauseMenu.setString("Pause Menu");
 
 		//Régler la taille des texts
 		this->textSize = 27;
 		textPlay.setCharacterSize(this->textSize);
 		textSave.setCharacterSize(this->textSize);
 		textQuit.setCharacterSize(this->textSize);
+		textPauseMenu.setCharacterSize(60);
 
 		//Mettre l'origin au centre des texts
 		this->textPlay.setOrigin(Vector2f((this->textPlay.getLocalBounds().width) / 2, (this->textPlay.getLocalBounds().height) / 2));
 		this->textSave.setOrigin(Vector2f((this->textSave.getLocalBounds().width) / 2, (this->textSave.getLocalBounds().height) / 2));
 		this->textQuit.setOrigin(Vector2f((this->textQuit.getLocalBounds().width) / 2, (this->textQuit.getLocalBounds().height) / 2));
+		this->textPauseMenu.setOrigin(Vector2f((this->textPauseMenu.getLocalBounds().width) / 2, (this->textPauseMenu.getLocalBounds().height) / 2));
+
 
 		//Régler la couleurs des texts
 		textPlay.setFillColor(Color(0, 216, 255));
 		textSave.setFillColor(Color(0, 216, 255));
 		textQuit.setFillColor(Color(0, 216, 255));
+		textPauseMenu.setFillColor(Color(255, 215, 0));
 
 		//Régler la position des texts
 		textPlay.setPosition(this->spriteButtonPlay.getPosition().x, this->spriteButtonPlay.getPosition().y);
 		textSave.setPosition(this->spriteButtonSave.getPosition().x, this->spriteButtonSave.getPosition().y);
 		textQuit.setPosition(this->spriteButtonQuit.getPosition().x, this->spriteButtonQuit.getPosition().y);
+		textPauseMenu.setPosition((this->gameData->window.getSize().x)/2, 35);
 	}
 
 	//Fonctions qui retourne le numéro du boutons sur lequel la souris se trouve
@@ -122,6 +129,13 @@ namespace TP3
 			if (Event::Closed == event.type)
 			{
 				this->gameData->window.close();
+			}
+
+			if (Event::KeyPressed == event.type)
+			{
+				if (event.key.code == Keyboard::Escape) {
+					this->gameData->machine.removeState();
+				}
 			}
 
 			//Clique sur les boutons
@@ -214,6 +228,7 @@ namespace TP3
 		this->gameData->window.draw(this->textPlay);
 		this->gameData->window.draw(this->textSave);
 		this->gameData->window.draw(this->textQuit);
+		this->gameData->window.draw(this->textPauseMenu);
 
 		this->gameData->window.display();
 	}

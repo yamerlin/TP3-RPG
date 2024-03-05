@@ -63,7 +63,7 @@ namespace TP3
 			if (Event::KeyPressed == event.type)
 			{
 				if (event.key.code == Keyboard::Escape) {
-					this->gameData->machine.addState(StateRef(new PauseState(this->gameData)), true);
+					this->gameData->machine.addState(StateRef(new PauseState(this->gameData)), false);
 				}
 			}
 		}
@@ -138,5 +138,10 @@ namespace TP3
 		this->joueur->render(this->gameData->window);
 
 		this->gameData->window.display();
+	}
+
+	void GameState::resume()
+	{
+		cout << "Retour au jeu";
 	}
 }

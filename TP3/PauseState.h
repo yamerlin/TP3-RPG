@@ -35,6 +35,7 @@ namespace TP3
 		Sprite spriteButtonQuit;
 
 		Font font;
+		Text textPauseMenu;
 		Text textPlay;
 		Text textSave;
 		Text textQuit;

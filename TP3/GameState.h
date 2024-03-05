@@ -20,6 +20,9 @@ namespace TP3
 		void update(float dt);
 		void draw(float dt);
 
+		void resume();
+
+
 		void renderMonde();
 		void detecterCombat();
 
