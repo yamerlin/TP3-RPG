@@ -1,5 +1,6 @@
 #include "GameState.h"
 #include "Combat.h"
+#include "PauseState.h"
 
 #include <string>
 #include <iostream>
@@ -62,7 +63,7 @@ namespace TP3
 			if (Event::KeyPressed == event.type)
 			{
 				if (event.key.code == Keyboard::Escape) {
-					this->gameData->window.close();
+					this->gameData->machine.addState(StateRef(new PauseState(this->gameData)), true);
 				}
 			}
 		}

@@ -8,10 +8,10 @@ using namespace sf;
 
 namespace TP3
 {
-	class MenuState : public State
+	class PauseState : public State
 	{
 	public:
-		MenuState(GameDataRef data);
+		PauseState(GameDataRef data);
 
 		void init();
 		void handleInput();
@@ -31,12 +31,12 @@ namespace TP3
 		Texture textureButtonOnHover;
 
 		Sprite spriteButtonPlay;
-		Sprite spriteButtonLoad;
+		Sprite spriteButtonSave;
 		Sprite spriteButtonQuit;
 
 		Font font;
 		Text textPlay;
-		Text textLoad;
+		Text textSave;
 		Text textQuit;
 
 		Vector2f buttonOrigin;

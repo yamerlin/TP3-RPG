@@ -2,19 +2,19 @@
 #include "GameState.h"
 
 #include <iostream>
-#include "MenuState.h"
+#include "PauseState.h"
 
 using namespace sf;
 using namespace std;
 
 namespace TP3
 {
-	MenuState::MenuState(GameDataRef data) : gameData(data)
+	PauseState::PauseState(GameDataRef data) : gameData(data)
 	{
 
 	}
 
-	void MenuState::init()
+	void PauseState::init()
 	{
 		//Charger la texture des boutons
 		if (!this->textureButton.loadFromFile("Textures/button.png")) {
@@ -26,13 +26,13 @@ namespace TP3
 
 		//Donner les textures des sprites
 		this->spriteButtonPlay.setTexture(this->textureButton);
-		this->spriteButtonLoad.setTexture(this->textureButton);
+		this->spriteButtonSave.setTexture(this->textureButton);
 		this->spriteButtonQuit.setTexture(this->textureButton);
 
 		//Mettre l'origin au centre des boutons
 		this->buttonOrigin = Vector2f((this->spriteButtonPlay.getLocalBounds().width)/2,(this->spriteButtonPlay.getLocalBounds().height)/2);
 		this->spriteButtonPlay.setOrigin(buttonOrigin);
-		this->spriteButtonLoad.setOrigin(buttonOrigin);
+		this->spriteButtonSave.setOrigin(buttonOrigin);
 		this->spriteButtonQuit.setOrigin(buttonOrigin);
 
 		//Mettre les positions au centre de la fenetre
@@ -41,14 +41,14 @@ namespace TP3
 
 		//Positionner les boutons par rapport au centre de la fenêtre
 		this->spriteButtonPlay.setPosition(buttonPosX, buttonPosY - 140);
-		this->spriteButtonLoad.setPosition(buttonPosX, buttonPosY);
+		this->spriteButtonSave.setPosition(buttonPosX, buttonPosY);
 		this->spriteButtonQuit.setPosition(buttonPosX, buttonPosY + 140);
 
 		//Régler la taille des boutons
 		this->buttonScaleX = 0.7;
 		this->buttonScaleY = 0.5;
 		this->spriteButtonPlay.setScale(buttonScaleX, buttonScaleY);
-		this->spriteButtonLoad.setScale(buttonScaleX, buttonScaleY);
+		this->spriteButtonSave.setScale(buttonScaleX, buttonScaleY);
 		this->spriteButtonQuit.setScale(buttonScaleX, buttonScaleY);
 
 
@@ -59,38 +59,38 @@ namespace TP3
 			cout << "Erreur chargement police de texte";
 		}
 		textPlay.setFont(font);
-		textLoad.setFont(font);
+		textSave.setFont(font);
 		textQuit.setFont(font);
 
 		//Setter les texts
-		textPlay.setString("Play");
-		textLoad.setString("Load save");
+		textPlay.setString("Return to game");
+		textSave.setString("Save and quit");
 		textQuit.setString("Quit");
 
 		//Régler la taille des texts
-		this->textSize = 40;
+		this->textSize = 27;
 		textPlay.setCharacterSize(this->textSize);
-		textLoad.setCharacterSize(this->textSize);
+		textSave.setCharacterSize(this->textSize);
 		textQuit.setCharacterSize(this->textSize);
 
 		//Mettre l'origin au centre des texts
 		this->textPlay.setOrigin(Vector2f((this->textPlay.getLocalBounds().width) / 2, (this->textPlay.getLocalBounds().height) / 2));
-		this->textLoad.setOrigin(Vector2f((this->textLoad.getLocalBounds().width) / 2, (this->textLoad.getLocalBounds().height) / 2));
+		this->textSave.setOrigin(Vector2f((this->textSave.getLocalBounds().width) / 2, (this->textSave.getLocalBounds().height) / 2));
 		this->textQuit.setOrigin(Vector2f((this->textQuit.getLocalBounds().width) / 2, (this->textQuit.getLocalBounds().height) / 2));
 
 		//Régler la couleurs des texts
 		textPlay.setFillColor(Color(0, 216, 255));
-		textLoad.setFillColor(Color(0, 216, 255));
+		textSave.setFillColor(Color(0, 216, 255));
 		textQuit.setFillColor(Color(0, 216, 255));
 
 		//Régler la position des texts
 		textPlay.setPosition(this->spriteButtonPlay.getPosition().x, this->spriteButtonPlay.getPosition().y);
-		textLoad.setPosition(this->spriteButtonLoad.getPosition().x, this->spriteButtonLoad.getPosition().y);
+		textSave.setPosition(this->spriteButtonSave.getPosition().x, this->spriteButtonSave.getPosition().y);
 		textQuit.setPosition(this->spriteButtonQuit.getPosition().x, this->spriteButtonQuit.getPosition().y);
 	}
 
 	//Fonctions qui retourne le numéro du boutons sur lequel la souris se trouve
-	int MenuState::checkIfMouseIsOverAButton(int posX, int posY)
+	int PauseState::checkIfMouseIsOverAButton(int posX, int posY)
 	{
 		//Retourne 0 -> Rien ou 1 -> Play ou 2 -> Load ou 3 -> Quit
 		int button = 0;
@@ -100,7 +100,7 @@ namespace TP3
 			button = 1;
 		}
 
-		if (this->spriteButtonLoad.getGlobalBounds().contains(Vector2f(posX, posY)))
+		if (this->spriteButtonSave.getGlobalBounds().contains(Vector2f(posX, posY)))
 		{
 			button = 2;
 		}
@@ -113,7 +113,7 @@ namespace TP3
 		return button;
 	}
 
-	void MenuState::handleInput()
+	void PauseState::handleInput()
 	{
 		sf::Event event;
 
@@ -129,12 +129,12 @@ namespace TP3
 			{
 				int isMouseOverAButton = checkIfMouseIsOverAButton(Mouse::getPosition(gameData->window).x, Mouse::getPosition(gameData->window).y);
 
-				//Jouer
+				//Retourner au jeu
 				if (isMouseOverAButton == 1) {
-					this->gameData->machine.addState(StateRef(new GameState(this->gameData)), true);
+					this->gameData->machine.removeState();
 				}
 
-				//Charger une save
+				//Sauvegarder et quitter
 				if (isMouseOverAButton == 2) {
 
 				}
@@ -158,10 +158,10 @@ namespace TP3
 				}
 				
 				if (isMouseOverAButton == 2) {
-					this->spriteButtonLoad.setTexture(this->textureButtonOnHover);
+					this->spriteButtonSave.setTexture(this->textureButtonOnHover);
 				}
 				else {
-					this->spriteButtonLoad.setTexture(this->textureButton);
+					this->spriteButtonSave.setTexture(this->textureButton);
 				}
 				
 				if (isMouseOverAButton == 3) {
@@ -174,7 +174,7 @@ namespace TP3
 		}
 	}
 
-	VertexArray MenuState::setBackgroundGradient() 
+	VertexArray PauseState::setBackgroundGradient()
 	{
 		//Création d'un tableau de 4 vertex définissant un TriangleStrip
 		VertexArray background(TriangleStrip, 4);
@@ -195,11 +195,11 @@ namespace TP3
 		return background;
 	}
 
-	void MenuState::update(float dt)
+	void PauseState::update(float dt)
 	{
 	}
 
-	void MenuState::draw(float dt)
+	void PauseState::draw(float dt)
 	{
 		this->gameData->window.clear();
 
@@ -207,12 +207,12 @@ namespace TP3
 
 		//Afficher les boutons
 		this->gameData->window.draw(this->spriteButtonPlay);
-		this->gameData->window.draw(this->spriteButtonLoad);
+		this->gameData->window.draw(this->spriteButtonSave);
 		this->gameData->window.draw(this->spriteButtonQuit);
 
 		//Afficher les textes
 		this->gameData->window.draw(this->textPlay);
-		this->gameData->window.draw(this->textLoad);
+		this->gameData->window.draw(this->textSave);
 		this->gameData->window.draw(this->textQuit);
 
 		this->gameData->window.display();
