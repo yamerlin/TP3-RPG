@@ -1,6 +1,6 @@
 #include "GameState.h"
-#include "Combat.h"
 #include "PauseState.h"
+#include "CombatState.h"
 
 #include <string>
 #include <iostream>
@@ -31,11 +31,11 @@ namespace TP3
 
 	void GameState::initPersonnages()
 	{
-		this->joueur = new Character(0, 100, 20, 10, 100.f, 150.f);
+		this->player = new Character(0, 100, 20, 10, 100.f, 150.f);
 
-		tableauEnnemi[0] = new Character(2, 100, 10, 10, 550.f, 550.f);
-		tableauEnnemi[1] = new Character(2, 100, 10, 10, 515.f, 50.f);
-		tableauEnnemi[2] = new Character(2, 100, 10, 10, 950.f, 250.f);
+		ennemyArray[0] = new Character(2, 100, 10, 10, 550.f, 550.f);
+		ennemyArray[1] = new Character(2, 100, 10, 10, 515.f, 50.f);
+		ennemyArray[2] = new Character(2, 100, 10, 10, 950.f, 250.f);
 	}
 
 
@@ -72,20 +72,20 @@ namespace TP3
 	void GameState::updatePlayerPos()
 	{
 		//Faire bouger le joueur tout en le gardant dans les limites de la map
-		if (Keyboard::isKeyPressed(Keyboard::Left) && joueur->getPosition().x > 0 + ((joueur->sprite.getTexture()->getSize().x) / 4.f) - 1.0) {
-			this->joueur->movePlayer(-1.f * this->dt * this->multiplier, 0.f);
+		if (Keyboard::isKeyPressed(Keyboard::Left) && player->getPosition().x > 0 + ((player->sprite.getTexture()->getSize().x) / 4.f) - 1.0) {
+			this->player->movePlayer(-1.f * this->dt * this->multiplier, 0.f);
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::Right) && joueur->getPosition().x < this->gameData->window.getSize().x - ((joueur->sprite.getTexture()->getSize().x) / 4.f) - 1.0) {
-			this->joueur->movePlayer(1.f * this->dt * this->multiplier, 0.f);
+		if (Keyboard::isKeyPressed(Keyboard::Right) && player->getPosition().x < this->gameData->window.getSize().x - ((player->sprite.getTexture()->getSize().x) / 4.f) - 1.0) {
+			this->player->movePlayer(1.f * this->dt * this->multiplier, 0.f);
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::Up) && joueur->getPosition().y > 0 + (joueur->sprite.getTexture()->getSize().y) / 4.f) {
-			this->joueur->movePlayer(0.f, -1.f * this->dt * this->multiplier);
+		if (Keyboard::isKeyPressed(Keyboard::Up) && player->getPosition().y > 0 + (player->sprite.getTexture()->getSize().y) / 4.f) {
+			this->player->movePlayer(0.f, -1.f * this->dt * this->multiplier);
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::Down) && joueur->getPosition().y < this->gameData->window.getSize().y - ((joueur->sprite.getTexture()->getSize().y) / 4.f) - 200.0) {
-			this->joueur->movePlayer(0.f, 1.f * this->dt * this->multiplier);
+		if (Keyboard::isKeyPressed(Keyboard::Down) && player->getPosition().y < this->gameData->window.getSize().y - ((player->sprite.getTexture()->getSize().y) / 4.f) - 200.0) {
+			this->player->movePlayer(0.f, 1.f * this->dt * this->multiplier);
 		}
 	}
 
@@ -94,14 +94,16 @@ namespace TP3
 	{
 		for (int i = 0; i < 3; i++) {
 
-			if (joueur->getPosition().x > tableauEnnemi[i]->getPosition().x - zoneDetectionCombatX
-				&& joueur->getPosition().x < tableauEnnemi[i]->getPosition().x + zoneDetectionCombatX
-				&& joueur->getPosition().y > tableauEnnemi[i]->getPosition().y - zoneDetectionCombatY
-				&& joueur->getPosition().y < tableauEnnemi[i]->getPosition().y + zoneDetectionCombatY)
+			if (player->getPosition().x > ennemyArray[i]->getPosition().x - zoneDetectionCombatX
+				&& player->getPosition().x < ennemyArray[i]->getPosition().x + zoneDetectionCombatX
+				&& player->getPosition().y > ennemyArray[i]->getPosition().y - zoneDetectionCombatY
+				&& player->getPosition().y < ennemyArray[i]->getPosition().y + zoneDetectionCombatY)
 			{
-				if (!tableauEnnemi[i]->isFighted) {
+				if (!ennemyArray[i]->isFighted) {
 					cout << "Combat !" << endl;
-					tableauEnnemi[i]->isFighted = true;
+					ennemyArray[i]->isFighted = true;
+
+					this->gameData->machine.addState(StateRef(new CombatState(this->gameData, this->player, this->ennemyArray[i])), false);
 				}
 				else {
 					cout << "Ennemi deja combattu !" << endl;
@@ -124,18 +126,18 @@ namespace TP3
 
 	void GameState::draw(float dt)
 	{
-		this->gameData->window.clear(sf::Color::Red);
+		this->gameData->window.clear();
 
 		//Faire afficher la map
 		this->gameData->window.draw(this->spriteMonde);
 
 		//Faire afficher les ennemis
 		for (int i = 0; i < 3; i++) {
-			this->tableauEnnemi[i]->render(this->gameData->window);
+			this->ennemyArray[i]->render(this->gameData->window);
 		}
 
 		//Faire afficher le joueur
-		this->joueur->render(this->gameData->window);
+		this->player->render(this->gameData->window);
 
 		this->gameData->window.display();
 	}

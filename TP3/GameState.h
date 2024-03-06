@@ -41,9 +41,9 @@ namespace TP3
 		Texture textureMonde;
 		Sprite spriteMonde;
 
-		Character* joueur;
-		Character* ennemi;
-		Character* tableauEnnemi[3];
+		Character* player;
+		Character* ennemy;
+		Character* ennemyArray[3];
 
 		int zoneDetectionCombatX; //En nombre de pixels
 		int zoneDetectionCombatY;
