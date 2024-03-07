@@ -22,11 +22,18 @@ namespace TP3
 
 	void GameState::initMonde()
 	{
-		if (!this->textureMonde.loadFromFile("Textures/maptest1.png")) {
+		//Map
+		if (!this->textureMonde.loadFromFile("Textures/map.png")) {
 			cout << "\nErreur chargement de la texture du monde\n";
 		}
 
 		this->spriteMonde.setTexture(this->textureMonde);
+	}
+
+	void GameState::initObjects()
+	{
+		objectArray[0] = new Potion(20);
+		objectArray[0]->spriteObject.setPosition(405.f, 405.f);
 	}
 
 	void GameState::initPersonnages()
@@ -49,9 +56,12 @@ namespace TP3
 		this->multiplier = 60.f;
 		this->zoneDetectionCombatX = 60;
 		this->zoneDetectionCombatY = 85;
+		this->zoneDetectionObjectsX = 50;
+		this->zoneDetectionObjectsY = 50;
 
 		this->initMonde();
 		this->initPersonnages();
+		this->initObjects();
 	}
 
 	void GameState::handleInput()
@@ -95,7 +105,7 @@ namespace TP3
 	}
 
 	//Qaund un joueur s'approche d'un ennemi un combat est detecté
-	void GameState::detecterCombat()
+	void GameState::detectCombat()
 	{
 		for (int i = 0; i < 3; i++) {
 
@@ -117,6 +127,21 @@ namespace TP3
 		}
 	}
 
+	//Quand je joueur s'approche d'un objet il peut le ramasser
+	void GameState::detectObject()
+	{
+		/*for (int i = 0; i < 3; i++) {*/
+
+			if (player->getPosition().x > objectArray[0]->spriteObject.getPosition().x - zoneDetectionObjectsX
+				&& player->getPosition().x < objectArray[0]->spriteObject.getPosition().x + zoneDetectionObjectsX
+				&& player->getPosition().y > objectArray[0]->spriteObject.getPosition().y - zoneDetectionObjectsY
+				&& player->getPosition().y < objectArray[0]->spriteObject.getPosition().y + zoneDetectionObjectsY)
+			{
+				cout << "Objet detecte" << endl;
+			}
+		//}
+	}
+
 	void GameState::update(float dt)
 	{
 		//Mettre a jour delta time
@@ -126,7 +151,10 @@ namespace TP3
 		this->updatePlayerPos();
 
 		//Detecter les combats
-		this->detecterCombat();
+		this->detectCombat();
+
+		//Detecter les objets
+		this->detectObject();
 	}
 
 	void GameState::draw(float dt)
@@ -140,6 +168,9 @@ namespace TP3
 		for (int i = 0; i < 3; i++) {
 			this->ennemyArray[i]->render(this->gameData->window);
 		}
+
+		//Afficher les objects
+		this->gameData->window.draw(this->objectArray[0]->spriteObject);
 
 		//Faire afficher le joueur
 		this->player->render(this->gameData->window);

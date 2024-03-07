@@ -145,9 +145,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="Character.cpp" />
-    <ClCompile Include="Object.cpp" />
     <ClCompile Include="PauseState.cpp" />
+    <ClCompile Include="Potion.cpp" />
+    <ClCompile Include="Shield.cpp" />
     <ClCompile Include="StateMachine.cpp" />
+    <ClCompile Include="Sword.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CombatState.h" />
@@ -157,8 +159,11 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="PauseState.h" />
+    <ClInclude Include="Potion.h" />
+    <ClInclude Include="Shield.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateMachine.h" />
+    <ClInclude Include="Sword.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

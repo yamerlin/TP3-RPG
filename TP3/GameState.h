@@ -4,6 +4,10 @@
 #include "State.h"
 #include "Game.h"
 #include "Character.h"
+#include "Potion.h"
+#include "Sword.h"
+#include "Shield.h"
+#include "Object.h"
 
 using namespace sf;
 
@@ -24,7 +28,6 @@ namespace TP3
 
 
 		void renderMonde();
-		void detecterCombat();
 
 		const bool running() const;
 		bool combat;
@@ -45,12 +48,21 @@ namespace TP3
 		Character* ennemy;
 		Character* ennemyArray[3];
 
+		Object* objectArray[10];
+
 		int zoneDetectionCombatX; //En nombre de pixels
 		int zoneDetectionCombatY;
 
+		int zoneDetectionObjectsX;
+		int zoneDetectionObjectsY;
+
 		void initPersonnages();
 		void initMonde();
+		void initObjects();
 		void updatePlayerPos();
+
+		void detectCombat();
+		void detectObject();
 	};
 }
 
