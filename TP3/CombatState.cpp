@@ -15,6 +15,8 @@ namespace TP3
 
 	void CombatState::init()
 	{
+		this->isCombatOver = false;
+
 		//Charger la texture du background
 		if (!this->textureUI.loadFromFile("Textures/combat.png")) {
 			cout << "\nErreur chargement de la texture de l'ui\n";
@@ -100,6 +102,26 @@ namespace TP3
 		textStatsDefense.setFillColor(Color::Black);
 		textStatsDefense.setString("Your defense points : " + to_string(this->player->getDefensePoint()));
 		textStatsDefense.setPosition(450, 725);
+
+		//Initialiser le text de status du combat; gagné ou perdu
+		textCombatStatus.setFont(font);
+		textCombatStatus.setFillColor(Color::Red);
+		textCombatStatus.setOutlineThickness(5.f);
+		textCombatStatus.setOutlineColor(Color::Black);
+		textCombatStatus.setCharacterSize(50);
+
+		//Choix du joueur qui commence à attaquer : 0=joueur, 1=ennemi
+		random.restart();
+		srand(this->random.getElapsedTime().asMicroseconds()); //On met une clock en temps que seed pour que ca soit réélement aléatoire enfin presque réélement bref ça l'est jamais réélement mais voila on fait genre
+		this->playerTurn = rand() % 2;
+
+		//Console log
+		if (this->playerTurn == 1) {
+			cout << "L'ennemi commence" << endl;
+		}
+		else {
+			cout << "Le joueur commence" << endl;
+		}
 	}
 
 	//Fonctions qui retourne true si la souris se trouve sur le bouton d'attaque
@@ -113,6 +135,52 @@ namespace TP3
 		}
 
 		return isMouseOverButton;
+	}
+
+	//Change le tour du joueur qui doit attaquer
+	void CombatState::changeTurn()
+	{
+		if (this->playerTurn == 0) {
+			this->playerTurn = 1;
+		}
+		else {
+			this->playerTurn = 0;
+		}
+	}
+
+	bool CombatState::checkIfSomeoneLost()
+	{
+		bool endCombat = false;
+
+		if (this->player->getHealthPoint() <= 0) {
+			cout << "Vous avez perdu" << endl;
+
+			cout << "Combat fini" << endl;
+			this->combatEndDelay.restart();
+
+			isCombatOver = true;
+			endCombat = true;
+
+			textCombatStatus.setString("Vous avez perdu ...");
+			textCombatStatus.setOrigin(Vector2f((this->textCombatStatus.getGlobalBounds().width) / 2, (this->textCombatStatus.getGlobalBounds().height) / 2));
+			textCombatStatus.setPosition((this->gameData->window.getSize().x) / 2, ((this->gameData->window.getSize().y) / 2)-100);
+		}
+
+		if (this->ennemy->getHealthPoint() <= 0) {
+			cout << "Vous avez gagne" << endl;
+
+			cout << "Combat fini" << endl;
+			this->combatEndDelay.restart();
+
+			isCombatOver = true;
+			endCombat = true;
+
+			textCombatStatus.setString("Vous avez gagné !");
+			textCombatStatus.setOrigin(Vector2f((this->textCombatStatus.getGlobalBounds().width) / 2, (this->textCombatStatus.getGlobalBounds().height) / 2));
+			textCombatStatus.setPosition((this->gameData->window.getSize().x) / 2, ((this->gameData->window.getSize().y) / 2)-100);
+		}
+
+		return endCombat;
 	}
 
 	void CombatState::handleInput()
@@ -153,36 +221,99 @@ namespace TP3
 			{
 				bool isMouseOverButton = checkIfMouseIsOverButton(Mouse::getPosition(gameData->window).x, Mouse::getPosition(gameData->window).y);
 
-				if (isMouseOverButton) {
-					this->ennemy->takeDamage(this->player->getAttackPoint());
-					cout << "Ennemy took damage";
-					cout << this->ennemy->getHealthPoint();
+				//Attaque du joueur
+				if (isMouseOverButton && playerTurn == 0 && !isCombatOver) {
 
-					Clock damageTime;
-					damageTime.restart();
+					//Calculer les dégats
+					int damage = (this->player->getAttackPoint()) - (this->ennemy->getDefensePoint());
 
-					this->spriteEnnemyCombat.setTexture(this->textureEnnemyDamagedCombat);
-					
-					/*Thread thread(&func);*/
-
-					while (damageTime.getElapsedTime().asMilliseconds() < 1000)
-					{
-						this->gameData->window.draw(this->spriteEnnemyCombat);
+					//On vérifiequ'on va pas infliger des dégats négatifs
+					if (damage < 0) {
+						damage = 0;
 					}
 
-					this->spriteEnnemyCombat.setTexture(this->textureEnnemyCombat);
-					this->gameData->window.draw(this->spriteEnnemyCombat);
+					//Infliger les dégats
+					this->ennemy->takeDamage(damage);
+					cout << "Ennemy took damage";
+					cout << this->ennemy->getHealthPoint();
+					
+					//Lancer la clock pour le sprite
+					this->damageTimeEnnemy.restart();
+
+					//Lancer la clock pour le delais d'attaque
+					this->ennemyAttackDelay.restart();
+
+					//Changer le sprite
+					this->spriteEnnemyCombat.setTexture(this->textureEnnemyDamagedCombat);
+
+					//Changer le tour
+					changeTurn();
 				}
 			}
 		}
 	}
 
+	
+
 	void CombatState::update(float dt)
 	{
 		/*cout << "Update appelle maintenant";*/
-		//Updater l'affichage de la vie des personnages
-		textPlayerHealth.setString("Health : " + to_string(this->player->getHealthPoint()));
-		textEnnemyHealth.setString("Health : " + to_string(this->ennemy->getHealthPoint()));
+
+
+		//Updater l'affichage de la vie des personnages en vérifiant qu'il ne sont pas négatif
+		int playerHealth = this->player->getHealthPoint();
+		if (playerHealth < 0) {
+			playerHealth = 0;
+		}
+		textPlayerHealth.setString("Health : " + to_string(playerHealth));
+
+		int ennemyHealth = this->ennemy->getHealthPoint();
+		if (ennemyHealth < 0) {
+			ennemyHealth = 0;
+		}
+		textEnnemyHealth.setString("Health : " + to_string(ennemyHealth));
+
+		//Updater le sprite des personnage prenant des dégats
+		if (this->damageTimeEnnemy.getElapsedTime().asMilliseconds() > 800) {
+			this->spriteEnnemyCombat.setTexture(this->textureEnnemyCombat);
+		}
+
+		if (this->damageTimePlayer.getElapsedTime().asMilliseconds() > 800) {
+			this->spritePlayerCombat.setTexture(this->texturePlayerCombat);
+		}
+
+		//Attaque de l'ennemi, vérifier que c'est son tour et qu'il a bien attendu un petit délai
+		if (playerTurn == 1 && ennemyAttackDelay.getElapsedTime().asMilliseconds() > 1100 && !isCombatOver) {
+			
+			//Calculer les dégats
+			int damage = (this->ennemy->getAttackPoint()) - (this->player->getDefensePoint());
+
+			//On vérifiequ'on va pas infliger des dégats négatifs
+			if (damage < 0) {
+				damage = 0;
+			}
+
+			//Infliger les dégats
+			this->player->takeDamage(damage);
+
+			//Lancer la clock
+			this->damageTimePlayer.restart();
+
+			//Changer le sprite
+			this->spritePlayerCombat.setTexture(this->texturePlayerDamagedCombat);
+
+			//Changer le tour
+			changeTurn();
+		}
+
+		//Vérifier si il ya eu une défaite
+		if (!isCombatOver) {
+			checkIfSomeoneLost();
+		}
+		
+		if (isCombatOver && combatEndDelay.getElapsedTime().asMilliseconds() > 2000) {
+			this->gameData->machine.removeState();
+		}
 	}
 
 	void CombatState::draw(float dt)
@@ -207,6 +338,9 @@ namespace TP3
 		//Afficher les stats
 		this->gameData->window.draw(this->textStatsAttack);
 		this->gameData->window.draw(this->textStatsDefense);
+
+		//Status du combat
+		this->gameData->window.draw(this->textCombatStatus);
 
 		this->gameData->window.display();
 	}

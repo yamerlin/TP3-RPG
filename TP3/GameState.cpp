@@ -31,11 +31,16 @@ namespace TP3
 
 	void GameState::initPersonnages()
 	{
-		this->player = new Character(0, 100, 20, 10, 100.f, 150.f);
+		this->player = new Character(0, 300, 20, 10, 100.f, 150.f);
 
-		ennemyArray[0] = new Character(2, 100, 10, 10, 550.f, 550.f);
-		ennemyArray[1] = new Character(2, 100, 10, 10, 515.f, 50.f);
-		ennemyArray[2] = new Character(2, 100, 10, 10, 950.f, 250.f);
+		//Ennemi difficile
+		ennemyArray[0] = new Character(2, 400, 40, 15, 550.f, 550.f);
+
+		//Ennemi moyen
+		ennemyArray[1] = new Character(2, 100, 60, 5, 515.f, 50.f);
+
+		//Ennemi facile
+		ennemyArray[2] = new Character(2, 60, 30, 15, 950.f, 250.f);
 	}
 
 
