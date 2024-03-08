@@ -17,6 +17,9 @@ namespace TP3 {
 	public:
 		Texture textureObject;
 		Sprite spriteObject;
+
+		Font font;
+		Text textObject;
 	};
 }
 

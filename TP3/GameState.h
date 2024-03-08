@@ -48,7 +48,12 @@ namespace TP3
 		Character* ennemy;
 		Character* ennemyArray[3];
 
-		Object* objectArray[10];
+		Object* objectArray[1];
+
+		Font font;
+		Text textInventaire;
+		Text textStatsAttack;
+		Text textStatsDefense;
 
 		int zoneDetectionCombatX; //En nombre de pixels
 		int zoneDetectionCombatY;
@@ -62,7 +67,8 @@ namespace TP3
 		void updatePlayerPos();
 
 		void detectCombat();
-		void detectObject();
+		bool detectObject();
+		int findObjectIndex();
 	};
 }
 

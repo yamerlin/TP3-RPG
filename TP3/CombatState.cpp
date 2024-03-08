@@ -95,13 +95,13 @@ namespace TP3
 		textStatsAttack.setCharacterSize(30);
 		textStatsAttack.setFillColor(Color::Black);
 		textStatsAttack.setString("Your attack points : " + to_string(this->player->getAttackPoint()));
-		textStatsAttack.setPosition(450,625);
+		textStatsAttack.setPosition(445, 635);
 
 		textStatsDefense.setFont(font);
 		textStatsDefense.setCharacterSize(30);
 		textStatsDefense.setFillColor(Color::Black);
 		textStatsDefense.setString("Your defense points : " + to_string(this->player->getDefensePoint()));
-		textStatsDefense.setPosition(450, 725);
+		textStatsDefense.setPosition(445, 715);
 
 		//Initialiser le text de status du combat; gagné ou perdu
 		textCombatStatus.setFont(font);
@@ -161,7 +161,7 @@ namespace TP3
 			isCombatOver = true;
 			endCombat = true;
 
-			textCombatStatus.setString("Vous avez perdu ...");
+			textCombatStatus.setString("You lost ...");
 			textCombatStatus.setOrigin(Vector2f((this->textCombatStatus.getGlobalBounds().width) / 2, (this->textCombatStatus.getGlobalBounds().height) / 2));
 			textCombatStatus.setPosition((this->gameData->window.getSize().x) / 2, ((this->gameData->window.getSize().y) / 2)-100);
 		}
@@ -175,7 +175,7 @@ namespace TP3
 			isCombatOver = true;
 			endCombat = true;
 
-			textCombatStatus.setString("Vous avez gagné !");
+			textCombatStatus.setString("You won !");
 			textCombatStatus.setOrigin(Vector2f((this->textCombatStatus.getGlobalBounds().width) / 2, (this->textCombatStatus.getGlobalBounds().height) / 2));
 			textCombatStatus.setPosition((this->gameData->window.getSize().x) / 2, ((this->gameData->window.getSize().y) / 2)-100);
 		}

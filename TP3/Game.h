@@ -28,6 +28,4 @@ namespace TP3
 		Clock clock;
 		void run();
 	};
-
-
 }

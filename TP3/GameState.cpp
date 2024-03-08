@@ -28,6 +28,31 @@ namespace TP3
 		}
 
 		this->spriteMonde.setTexture(this->textureMonde);
+
+		//Charger la police de text
+		if (!font.loadFromFile("Textures/FontPixel.ttf"))
+		{
+			cout << "Erreur chargement police de texte";
+		}
+		this->textInventaire.setFont(font);
+		//Setter le texte inventaire
+		this->textInventaire.setString("Inventory :");
+		this->textInventaire.setCharacterSize(25);
+		this->textInventaire.setFillColor(Color::Black);
+		this->textInventaire.setPosition(20, 605);
+
+		//Afficher les stats du joueur
+		textStatsAttack.setFont(font);
+		textStatsAttack.setCharacterSize(30);
+		textStatsAttack.setFillColor(Color::Black);
+		textStatsAttack.setString("Your attack points : " + to_string(this->player->getAttackPoint()));
+		textStatsAttack.setPosition(445, 635);
+
+		textStatsDefense.setFont(font);
+		textStatsDefense.setCharacterSize(30);
+		textStatsDefense.setFillColor(Color::Black);
+		textStatsDefense.setString("Your defense points : " + to_string(this->player->getDefensePoint()));
+		textStatsDefense.setPosition(445, 715);
 	}
 
 	void GameState::initObjects()
@@ -59,8 +84,8 @@ namespace TP3
 		this->zoneDetectionObjectsX = 50;
 		this->zoneDetectionObjectsY = 50;
 
-		this->initMonde();
 		this->initPersonnages();
+		this->initMonde();
 		this->initObjects();
 	}
 
@@ -127,19 +152,41 @@ namespace TP3
 		}
 	}
 
-	//Quand je joueur s'approche d'un objet il peut le ramasser
-	void GameState::detectObject()
+	bool GameState::detectObject()
 	{
-		/*for (int i = 0; i < 3; i++) {*/
+		bool isObject = false;
 
-			if (player->getPosition().x > objectArray[0]->spriteObject.getPosition().x - zoneDetectionObjectsX
-				&& player->getPosition().x < objectArray[0]->spriteObject.getPosition().x + zoneDetectionObjectsX
-				&& player->getPosition().y > objectArray[0]->spriteObject.getPosition().y - zoneDetectionObjectsY
-				&& player->getPosition().y < objectArray[0]->spriteObject.getPosition().y + zoneDetectionObjectsY)
+		for (int i = 0; i < size(objectArray); i++) {
+
+			if (player->getPosition().x > objectArray[i]->spriteObject.getPosition().x - zoneDetectionObjectsX
+				&& player->getPosition().x < objectArray[i]->spriteObject.getPosition().x + zoneDetectionObjectsX
+				&& player->getPosition().y > objectArray[i]->spriteObject.getPosition().y - zoneDetectionObjectsY
+				&& player->getPosition().y < objectArray[i]->spriteObject.getPosition().y + zoneDetectionObjectsY)
 			{
-				cout << "Objet detecte" << endl;
+				isObject = true;
 			}
-		//}
+		}
+
+		return isObject;
+	}
+
+	//Quand je joueur s'approche d'un objet cette fonction retourne l'index de l'objet dans le tableau des objets sur la map
+	int GameState::findObjectIndex()
+	{
+		int objectIndex = 0;
+
+		for (int i = 0; i < size(objectArray); i++) {
+
+			if (player->getPosition().x > objectArray[i]->spriteObject.getPosition().x - zoneDetectionObjectsX
+				&& player->getPosition().x < objectArray[i]->spriteObject.getPosition().x + zoneDetectionObjectsX
+				&& player->getPosition().y > objectArray[i]->spriteObject.getPosition().y - zoneDetectionObjectsY
+				&& player->getPosition().y < objectArray[i]->spriteObject.getPosition().y + zoneDetectionObjectsY)
+			{
+				objectIndex = i;
+			}
+		}
+
+		return objectIndex;
 	}
 
 	void GameState::update(float dt)
@@ -152,9 +199,6 @@ namespace TP3
 
 		//Detecter les combats
 		this->detectCombat();
-
-		//Detecter les objets
-		this->detectObject();
 	}
 
 	void GameState::draw(float dt)
@@ -163,6 +207,11 @@ namespace TP3
 
 		//Faire afficher la map
 		this->gameData->window.draw(this->spriteMonde);
+
+		//Afficher le texte de l'inventaire
+		this->gameData->window.draw(this->textInventaire);
+		this->gameData->window.draw(this->textStatsAttack);
+		this->gameData->window.draw(this->textStatsDefense);
 
 		//Faire afficher les ennemis
 		for (int i = 0; i < 3; i++) {
@@ -174,6 +223,13 @@ namespace TP3
 
 		//Faire afficher le joueur
 		this->player->render(this->gameData->window);
+
+		//Detecter les objets
+		if (this->detectObject()) {
+			this->gameData->window.draw(this->objectArray[findObjectIndex()]->textObject);
+			cout << "Objet detecte" << endl;
+			cout << "Index : " << findObjectIndex() << endl;
+		}
 
 		this->gameData->window.display();
 	}
