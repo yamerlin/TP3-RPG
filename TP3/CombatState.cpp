@@ -1,8 +1,6 @@
 #include "CombatState.h"
 #include "PauseState.h"
 
-#include <iostream>
-
 using namespace sf;
 using namespace std;
 

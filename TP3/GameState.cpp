@@ -59,7 +59,7 @@ namespace TP3
 	{
 		objectList.push_front(new Potion(20, 405.f, 405.f));
 		objectList.push_front(new Potion(30, 950.f, 550.f));
-		objectList.push_front(new Sword(10, 50.f, 550.f));
+		objectList.push_front(new Sword(20, 50.f, 550.f));
 		objectList.push_front(new Shield(10, 780.f, 50.f));
 	}
 
@@ -307,6 +307,36 @@ namespace TP3
 		return object;
 	}
 
+	//Retourne true si un ennemi a été vaincu et si il n'a pas déjà été looté
+	void GameState::lootDefeatedEnnemy()
+	{
+		random.restart();
+		for (int i = 0; i < 3; i++) {
+			if (ennemyArray[i]->isFighted && !ennemyArray[i]->isLooted) {
+				ennemyArray[i]->isLooted = true;
+
+				//Création d'un loot alléatoire
+				srand(this->random.getElapsedTime().asMicroseconds());
+				int randomObject = rand() % 3;
+
+				//0 = Potion
+				if (randomObject == 0) {
+					objectList.push_front(new Potion(300, ennemyArray[i]->sprite.getPosition().x, ennemyArray[i]->sprite.getPosition().y));
+				}
+
+				//1 = Epée
+				if (randomObject == 1) {
+					objectList.push_front(new Sword(40, ennemyArray[i]->sprite.getPosition().x, ennemyArray[i]->sprite.getPosition().y));
+				}
+
+				//2 = Bouclier
+				if (randomObject == 2) {
+					objectList.push_front(new Shield(35, ennemyArray[i]->sprite.getPosition().x, ennemyArray[i]->sprite.getPosition().y));
+				}
+			}
+		}
+	}
+
 	void GameState::update(float dt)
 	{
 		//Mettre a jour delta time
@@ -317,6 +347,9 @@ namespace TP3
 
 		//Detecter les combats
 		this->detectCombat();
+
+		//Vérifier si un ennemi a été battu pour pouvoir créer son loot
+		this->lootDefeatedEnnemy();
 	}
 
 	void GameState::showInventory()

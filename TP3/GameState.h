@@ -33,6 +33,8 @@ namespace TP3
 		bool combat;
 
 		Clock clock;
+		//Clock pour la seed du srand()
+		Clock random;
 		float dt;
 		float multiplier;
 
@@ -75,6 +77,7 @@ namespace TP3
 		Object* findObjectToHighlight(int posX, int posY);
 		void detectCombat();
 		bool detectObject();
+		void lootDefeatedEnnemy();
 		Object* findObject();
 	};
 }

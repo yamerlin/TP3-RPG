@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <cstdlib>
+#include <iostream>
 #include "State.h"
 #include "Game.h"
 #include "Character.h"

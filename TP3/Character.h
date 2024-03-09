@@ -32,6 +32,8 @@ namespace TP3 {
 		Sprite sprite;
 		Texture texture;
 		bool isFighted;
+		bool isLooted;
+
 		bool isSwordEquiped;
 		bool isShieldEquiped;
 
