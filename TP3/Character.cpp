@@ -1,9 +1,4 @@
 #include "Character.h"
-#include <string>
-#include <iostream>
-#include <list>
-
-using namespace std;
 
 namespace TP3 {
 	Character::Character(int type, int healthPoint, int attackPoint, int defensePoint, float spawnPosX, float spawnPosY) {
@@ -33,7 +28,6 @@ namespace TP3 {
 				cout << "\nErreur chargement de la texture\n";
 			}
 		}
-
 	}
 
 	void Character::initSprite(float spawnPosX, float spawnPosY)
@@ -44,7 +38,6 @@ namespace TP3 {
 
 		//Centrer le point d'origine (la pos du perso)
 		this->sprite.setOrigin((this->sprite.getTexture()->getSize().x) / 2.f, (this->sprite.getTexture()->getSize().y) / 2.f);
-
 
 		sprite.setPosition(spawnPosX, spawnPosY);
 	}

@@ -10,9 +10,11 @@ namespace TP3 {
 	{
 	private:
 		int healthPoint;
+		float posX;
+		float posY;
 
 	public:
-		Potion(int healthPoint);
+		Potion(int healthPoint, float posX, float posY);
 
 		int getHealthPoint();
 	};

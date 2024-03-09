@@ -2,13 +2,14 @@
 
 namespace TP3 {
 
-	Potion::Potion(int healthPoint) : healthPoint(healthPoint)
+	Potion::Potion(int healthPoint, float posX, float posY) : healthPoint(healthPoint), posX(posX), posY(posY)
 	{
 		if (!this->textureObject.loadFromFile("Textures/potionObject.png")) {
 			cout << "\nErreur chargement de la texture\n";
 		}
 		this->spriteObject.setTexture(this->textureObject);
 		this->spriteObject.setScale(0.5, 0.5);
+		this->spriteObject.setPosition(this->posX, this->posY);
 
 		//Centrer le point d'origine de l'objet
 		this->spriteObject.setOrigin((this->spriteObject.getTexture()->getSize().x) / 2.f, (this->spriteObject.getTexture()->getSize().y) / 2.f);

@@ -48,7 +48,7 @@ namespace TP3
 		Character* ennemy;
 		Character* ennemyArray[3];
 
-		Object* objectArray[1];
+		list<Object*> objectList; 
 
 		Font font;
 		Text textInventaire;
@@ -61,6 +61,11 @@ namespace TP3
 		int zoneDetectionObjectsX;
 		int zoneDetectionObjectsY;
 
+		//float inventoryObjectPosX;
+		//float inventoryObjectPosY;
+
+		void showInventory();
+
 		void initPersonnages();
 		void initMonde();
 		void initObjects();
@@ -68,7 +73,7 @@ namespace TP3
 
 		void detectCombat();
 		bool detectObject();
-		int findObjectIndex();
+		Object* findObject();
 	};
 }
 

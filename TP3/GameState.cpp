@@ -57,8 +57,7 @@ namespace TP3
 
 	void GameState::initObjects()
 	{
-		objectArray[0] = new Potion(20);
-		objectArray[0]->spriteObject.setPosition(405.f, 405.f);
+		objectList.push_front(new Potion(20, 405.f, 405.f));
 	}
 
 	void GameState::initPersonnages()
@@ -102,8 +101,18 @@ namespace TP3
 
 			if (Event::KeyPressed == event.type)
 			{
+				//Ouvrir le menu Pause
 				if (event.key.code == Keyboard::Escape) {
 					this->gameData->machine.addState(StateRef(new PauseState(this->gameData)), false);
+				}
+
+				//Rammaser un objet
+				if (event.key.code == Keyboard::E && detectObject()) {
+					//Le mettre dans l'inventaire du joueur
+					this->player->inventory.push_front(findObject());
+
+					//L'enlever de la map
+					this->objectList.remove(findObject());
 				}
 			}
 		}
@@ -152,16 +161,17 @@ namespace TP3
 		}
 	}
 
+	//Retourne true si le joueur est sur un objet
 	bool GameState::detectObject()
 	{
 		bool isObject = false;
 
-		for (int i = 0; i < size(objectArray); i++) {
+		for (Object* it : objectList) {
 
-			if (player->getPosition().x > objectArray[i]->spriteObject.getPosition().x - zoneDetectionObjectsX
-				&& player->getPosition().x < objectArray[i]->spriteObject.getPosition().x + zoneDetectionObjectsX
-				&& player->getPosition().y > objectArray[i]->spriteObject.getPosition().y - zoneDetectionObjectsY
-				&& player->getPosition().y < objectArray[i]->spriteObject.getPosition().y + zoneDetectionObjectsY)
+			if (player->getPosition().x > it->spriteObject.getPosition().x - zoneDetectionObjectsX
+				&& player->getPosition().x < it->spriteObject.getPosition().x + zoneDetectionObjectsX
+				&& player->getPosition().y > it->spriteObject.getPosition().y - zoneDetectionObjectsY
+				&& player->getPosition().y < it->spriteObject.getPosition().y + zoneDetectionObjectsY)
 			{
 				isObject = true;
 			}
@@ -170,23 +180,23 @@ namespace TP3
 		return isObject;
 	}
 
-	//Quand je joueur s'approche d'un objet cette fonction retourne l'index de l'objet dans le tableau des objets sur la map
-	int GameState::findObjectIndex()
+	//Quand je joueur s'approche d'un objet cette fonction retourne l'objet de la list objectList sur lequel il se trouve
+	Object* GameState::findObject()
 	{
-		int objectIndex = 0;
+		Object* object = NULL;
 
-		for (int i = 0; i < size(objectArray); i++) {
+		for (Object* it : objectList) {
 
-			if (player->getPosition().x > objectArray[i]->spriteObject.getPosition().x - zoneDetectionObjectsX
-				&& player->getPosition().x < objectArray[i]->spriteObject.getPosition().x + zoneDetectionObjectsX
-				&& player->getPosition().y > objectArray[i]->spriteObject.getPosition().y - zoneDetectionObjectsY
-				&& player->getPosition().y < objectArray[i]->spriteObject.getPosition().y + zoneDetectionObjectsY)
+			if (player->getPosition().x > it->spriteObject.getPosition().x - zoneDetectionObjectsX
+				&& player->getPosition().x < it->spriteObject.getPosition().x + zoneDetectionObjectsX
+				&& player->getPosition().y > it->spriteObject.getPosition().y - zoneDetectionObjectsY
+				&& player->getPosition().y < it->spriteObject.getPosition().y + zoneDetectionObjectsY)
 			{
-				objectIndex = i;
+				object = it;
 			}
 		}
 
-		return objectIndex;
+		return object;
 	}
 
 	void GameState::update(float dt)
@@ -201,6 +211,20 @@ namespace TP3
 		this->detectCombat();
 	}
 
+	void GameState::showInventory()
+	{
+		//Position des objets dans l'inventaire
+		float inventoryObjectPosX = 60.f;
+		float inventoryObjectPosY = 671.f;
+
+		for (Object* it : this->player->inventory) {
+			it->spriteObject.setPosition(inventoryObjectPosX, inventoryObjectPosY);
+			this->gameData->window.draw(it->spriteObject);
+
+			inventoryObjectPosX = inventoryObjectPosX + 50.f;
+		}
+	}
+
 	void GameState::draw(float dt)
 	{
 		this->gameData->window.clear();
@@ -212,6 +236,8 @@ namespace TP3
 		this->gameData->window.draw(this->textInventaire);
 		this->gameData->window.draw(this->textStatsAttack);
 		this->gameData->window.draw(this->textStatsDefense);
+		//Afficher les objets de l'inventaire
+		this->showInventory();
 
 		//Faire afficher les ennemis
 		for (int i = 0; i < 3; i++) {
@@ -219,16 +245,20 @@ namespace TP3
 		}
 
 		//Afficher les objects
-		this->gameData->window.draw(this->objectArray[0]->spriteObject);
+		/*for (int i = 0; i < size(objectArray); i++) {
+			this->findObject()->spriteObject;
+		}*/
+		for (Object* it : objectList) {
+			this->gameData->window.draw(it->spriteObject);
+		}
 
 		//Faire afficher le joueur
 		this->player->render(this->gameData->window);
 
 		//Detecter les objets
 		if (this->detectObject()) {
-			this->gameData->window.draw(this->objectArray[findObjectIndex()]->textObject);
+			this->gameData->window.draw(findObject()->textObject);
 			cout << "Objet detecte" << endl;
-			cout << "Index : " << findObjectIndex() << endl;
 		}
 
 		this->gameData->window.display();

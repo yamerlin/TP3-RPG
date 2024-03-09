@@ -1,4 +1,8 @@
 #pragma once
+#include <string>
+#include <iostream>
+#include <list>
+#include "Object.h"
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
@@ -30,7 +34,7 @@ namespace TP3 {
 		bool isFighted;
 
 		Character(int type, int healthPoint, int attackPoint, int defensePoint, float spawnPosX, float spawnPosY);
-
+		list<Object*> inventory;
 
 		void update();
 		void render(RenderTarget& target);
