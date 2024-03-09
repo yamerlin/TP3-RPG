@@ -71,10 +71,10 @@ namespace TP3
 		void initObjects();
 		void updatePlayerPos();
 
+		bool checkIfMouseIsOverAnItem(int posX, int posY);
+		Object* findObjectToHighlight(int posX, int posY);
 		void detectCombat();
 		bool detectObject();
 		Object* findObject();
 	};
 }
-
-

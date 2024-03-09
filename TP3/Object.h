@@ -15,11 +15,25 @@ namespace TP3 {
 	protected:
 		
 	public:
+		int attackPoint;
+		int defensePoint;
+		int type; //0 = Sword, 1 = Shield
+
 		Texture textureObject;
+		Texture textureObjectHighlighted;
+		Texture textureObjectEquiped;
 		Sprite spriteObject;
 
 		Font font;
 		Text textObject;
+		Text textInfo;
+
+		bool canEquip;
+		bool isEquiped;
+
+		int getAttackPoint();
+		int getDefensePoint();
+		int getHealthPoint();
 	};
 }
 

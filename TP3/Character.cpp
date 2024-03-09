@@ -8,6 +8,8 @@ namespace TP3 {
 		this->defensePoint = defensePoint;
 		this->deplacementSpeed = 7.f;
 		this->isFighted = false;
+		this->isSwordEquiped = false;
+		this->isShieldEquiped = false;
 
 		this->initTexture(type);
 		this->initSprite(spawnPosX, spawnPosY);

@@ -9,11 +9,11 @@ namespace TP3 {
 	class Sword : public Object
 	{
 	private:
-		int attackPoint;
+		float posX;
+		float posY;
 
 	public:
-		Sword(int attackPoint);
-
+		Sword(int attackPoint, float posX, float posY);
 		int getAttackPoint();
 	};
 }

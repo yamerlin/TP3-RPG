@@ -32,6 +32,8 @@ namespace TP3 {
 		Sprite sprite;
 		Texture texture;
 		bool isFighted;
+		bool isSwordEquiped;
+		bool isShieldEquiped;
 
 		Character(int type, int healthPoint, int attackPoint, int defensePoint, float spawnPosX, float spawnPosY);
 		list<Object*> inventory;

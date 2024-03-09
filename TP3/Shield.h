@@ -9,11 +9,11 @@ namespace TP3 {
 	class Shield : public Object
 	{
 	private:
-		int defensePoint;
+		float posX;
+		float posY;
 
 	public:
-		Shield(int defensePoint);
-
+		Shield(int defensePoint, float posX, float posY);
 		int getDefensePoint();
 	};
 }

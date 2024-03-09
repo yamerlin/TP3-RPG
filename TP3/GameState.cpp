@@ -58,10 +58,14 @@ namespace TP3
 	void GameState::initObjects()
 	{
 		objectList.push_front(new Potion(20, 405.f, 405.f));
+		objectList.push_front(new Potion(30, 950.f, 550.f));
+		objectList.push_front(new Sword(10, 50.f, 550.f));
+		objectList.push_front(new Shield(10, 780.f, 50.f));
 	}
 
 	void GameState::initPersonnages()
 	{
+		//Le joueur
 		this->player = new Character(0, 300, 20, 10, 100.f, 150.f);
 
 		//Ennemi difficile
@@ -115,6 +119,78 @@ namespace TP3
 					this->objectList.remove(findObject());
 				}
 			}
+
+			//Mettre un effet de surlignage quand on passe la souris sur un item
+			if (Event::MouseMoved == event.type)
+			{
+				if (checkIfMouseIsOverAnItem(Mouse::getPosition(gameData->window).x, Mouse::getPosition(gameData->window).y)) {
+					Object* object = findObjectToHighlight(Mouse::getPosition(gameData->window).x, Mouse::getPosition(gameData->window).y);
+
+					if (!object->isEquiped) {
+						object->spriteObject.setTexture(object->textureObjectHighlighted);
+					}
+				}
+				else {
+					for (Object* it : this->player->inventory) {
+						if (!it->isEquiped) {
+							it->spriteObject.setTexture(it->textureObject);
+						}
+					}
+				}
+			}
+
+			//Equiper et désequiper un objet
+			if (Event::MouseButtonReleased == event.type)
+			{
+				if (checkIfMouseIsOverAnItem(Mouse::getPosition(gameData->window).x, Mouse::getPosition(gameData->window).y)) {
+					Object* object = findObjectToHighlight(Mouse::getPosition(gameData->window).x, Mouse::getPosition(gameData->window).y);
+
+					//Equiper
+					if (object->canEquip && !object->isEquiped) {
+						if (object->type == 0 && !this->player->isSwordEquiped) {
+							object->isEquiped = true;
+							this->player->isSwordEquiped = true;
+							//Sprite
+							object->spriteObject.setTexture(object->textureObjectEquiped);
+
+							//Points
+							this->player->setAttackPoint(this->player->getAttackPoint() + object->getAttackPoint());
+							this->textStatsAttack.setString("Your attack points : " + to_string(this->player->getAttackPoint()));
+						}
+						else if (object->type == 1 && !this->player->isShieldEquiped) {
+							object->isEquiped = true;
+							this->player->isShieldEquiped = true;
+
+							object->spriteObject.setTexture(object->textureObjectEquiped);
+
+							this->player->setDefensePoint(this->player->getDefensePoint() + object->getDefensePoint());
+							this->textStatsDefense.setString("Your defense points : " + to_string(this->player->getDefensePoint()));
+						}
+
+					}
+					//Désequiper
+					else if (object->canEquip && object->isEquiped) {
+						if (object->type == 0) {
+							object->isEquiped = false;
+							this->player->isSwordEquiped = false;
+
+							object->spriteObject.setTexture(object->textureObject);
+
+							this->player->setAttackPoint(this->player->getAttackPoint() - object->getAttackPoint());
+							this->textStatsAttack.setString("Your attack points : " + to_string(this->player->getAttackPoint()));
+						}
+						else if (object->type == 1) {
+							object->isEquiped = false;
+							this->player->isShieldEquiped = false;
+
+							object->spriteObject.setTexture(object->textureObject);
+
+							this->player->setDefensePoint(this->player->getDefensePoint() - object->getDefensePoint());
+							this->textStatsDefense.setString("Your defense points : " + to_string(this->player->getDefensePoint()));
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -136,6 +212,38 @@ namespace TP3
 		if (Keyboard::isKeyPressed(Keyboard::Down) && player->getPosition().y < this->gameData->window.getSize().y - ((player->sprite.getTexture()->getSize().y) / 4.f) - 200.0) {
 			this->player->movePlayer(0.f, 1.f * this->dt * this->multiplier);
 		}
+	}
+
+	//Retourne l'objet de l'inventaire sur lequel est la souris
+	Object* GameState::findObjectToHighlight(int posX, int posY)
+	{
+		Object* object = NULL;
+
+		for (Object* it : this->player->inventory) {
+
+			if (it->spriteObject.getGlobalBounds().contains(Vector2f(posX, posY)))
+			{
+				object = it;
+			}
+		}
+
+		return object;
+	}
+
+	//Retourne true de si la souris est sur un objet de l'inventaire
+	bool GameState::checkIfMouseIsOverAnItem(int posX, int posY)
+	{
+		bool isMouseOverAnItem = false;
+
+		for (Object* it : this->player->inventory) {
+
+			if (it->spriteObject.getGlobalBounds().contains(Vector2f(posX, posY)))
+			{
+				isMouseOverAnItem = true;
+			}
+		}
+
+		return isMouseOverAnItem;
 	}
 
 	//Qaund un joueur s'approche d'un ennemi un combat est detecté
@@ -213,15 +321,23 @@ namespace TP3
 
 	void GameState::showInventory()
 	{
+		int objectCount = 0;
 		//Position des objets dans l'inventaire
 		float inventoryObjectPosX = 60.f;
 		float inventoryObjectPosY = 671.f;
 
 		for (Object* it : this->player->inventory) {
+			objectCount++;
 			it->spriteObject.setPosition(inventoryObjectPosX, inventoryObjectPosY);
 			this->gameData->window.draw(it->spriteObject);
 
-			inventoryObjectPosX = inventoryObjectPosX + 50.f;
+			inventoryObjectPosX = inventoryObjectPosX + 80.f;
+
+			//Decaler à la deuxième ligne de l'inventaire
+			if (objectCount == 5) {
+				inventoryObjectPosX = 60.f;
+				inventoryObjectPosY = inventoryObjectPosY + 80;
+			}
 		}
 	}
 
@@ -245,9 +361,6 @@ namespace TP3
 		}
 
 		//Afficher les objects
-		/*for (int i = 0; i < size(objectArray); i++) {
-			this->findObject()->spriteObject;
-		}*/
 		for (Object* it : objectList) {
 			this->gameData->window.draw(it->spriteObject);
 		}
@@ -255,10 +368,18 @@ namespace TP3
 		//Faire afficher le joueur
 		this->player->render(this->gameData->window);
 
-		//Detecter les objets
+		//Afficher le texte qui dit qu'on a trouvé un objet
 		if (this->detectObject()) {
 			this->gameData->window.draw(findObject()->textObject);
-			cout << "Objet detecte" << endl;
+			/*cout << "Objet detecte" << endl;*/
+		}
+
+		//Afficher le texte d'information de l'objet
+		if (checkIfMouseIsOverAnItem(Mouse::getPosition(gameData->window).x, Mouse::getPosition(gameData->window).y)) {
+			Object* object = findObjectToHighlight(Mouse::getPosition(gameData->window).x, Mouse::getPosition(gameData->window).y);
+			object->textInfo.setPosition((Mouse::getPosition(gameData->window).x) + 20, Mouse::getPosition(gameData->window).y);
+
+			this->gameData->window.draw(object->textInfo);
 		}
 
 		this->gameData->window.display();
