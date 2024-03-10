@@ -17,6 +17,7 @@ namespace TP3 {
 	public:
 		int attackPoint;
 		int defensePoint;
+		int healthPoint;
 		int type; //0 = Sword, 1 = Shield
 
 		Texture textureObject;
@@ -30,6 +31,7 @@ namespace TP3 {
 
 		bool canEquip;
 		bool isEquiped;
+		bool isPotion;
 
 		int getAttackPoint();
 		int getDefensePoint();

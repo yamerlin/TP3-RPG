@@ -9,6 +9,7 @@ namespace TP3 {
 		this->canEquip = true;
 		this->isEquiped = false;
 		this->type = 0;
+		this->isPotion = false;
 
 		//Setter la texture
 		if (!this->textureObject.loadFromFile("Textures/swordObject1.png")) {

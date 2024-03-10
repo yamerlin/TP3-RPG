@@ -26,7 +26,6 @@ namespace TP3
 
 		void resume();
 
-
 		void renderMonde();
 
 		const bool running() const;
@@ -35,6 +34,7 @@ namespace TP3
 		Clock clock;
 		//Clock pour la seed du srand()
 		Clock random;
+		Clock random2;
 		float dt;
 		float multiplier;
 
@@ -50,7 +50,8 @@ namespace TP3
 		Character* ennemy;
 		Character* ennemyArray[3];
 
-		list<Object*> objectList; 
+		list<Object*> objectList;
+		list<Object*> potionList;
 
 		Font font;
 		Text textInventaire;
@@ -63,9 +64,6 @@ namespace TP3
 		int zoneDetectionObjectsX;
 		int zoneDetectionObjectsY;
 
-		//float inventoryObjectPosX;
-		//float inventoryObjectPosY;
-
 		void showInventory();
 
 		void initPersonnages();
@@ -75,6 +73,7 @@ namespace TP3
 
 		bool checkIfMouseIsOverAnItem(int posX, int posY);
 		Object* findObjectToHighlight(int posX, int posY);
+		//void createPotionList();
 		void detectCombat();
 		bool detectObject();
 		void lootDefeatedEnnemy();

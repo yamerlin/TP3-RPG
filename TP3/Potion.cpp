@@ -2,11 +2,13 @@
 
 namespace TP3 {
 
-	Potion::Potion(int healthPoint, float posX, float posY) : healthPoint(healthPoint), posX(posX), posY(posY)
+	Potion::Potion(int healthPoint, float posX, float posY) : posX(posX), posY(posY)
 	{
+		this->healthPoint = healthPoint;
 		//On ne peut pas equiper une potion
 		this->canEquip = false;
 		this->isEquiped = false;
+		this->isPotion = true;
 
 		//Setter la texture
 		if (!this->textureObject.loadFromFile("Textures/potionObject.png")) {
@@ -47,7 +49,7 @@ namespace TP3 {
 		this->textInfo.setOutlineColor(Color::White);
 	}
 
-	int Potion::getHealthPoint() {
+	int Object::getHealthPoint() {
 		return this->healthPoint;
 	}
 }

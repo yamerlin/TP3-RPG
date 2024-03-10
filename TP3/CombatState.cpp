@@ -1,12 +1,11 @@
 #include "CombatState.h"
-#include "PauseState.h"
 
 using namespace sf;
 using namespace std;
 
 namespace TP3 
 {
-	TP3::CombatState::CombatState(GameDataRef data, Character* player, Character* ennemy) : gameData(data), player(player), ennemy(ennemy)
+	TP3::CombatState::CombatState(GameDataRef data, Character* player, Character* ennemy/*, list<Object*> potionList*/) : gameData(data), player(player), ennemy(ennemy)/*, potionList(potionList)*/
 	{
 
 	}
@@ -150,20 +149,51 @@ namespace TP3
 	{
 		bool endCombat = false;
 
+		//Defaite du joueur
 		if (this->player->getHealthPoint() <= 0) {
-			cout << "Vous avez perdu" << endl;
 
-			cout << "Combat fini" << endl;
-			this->combatEndDelay.restart();
+			//Ajouter les potions disponibles de l'inventaire dans la liste des potions
+			for (Object* it : this->player->inventory) {
+				if (it->isPotion) {
+					this->potionList.push_front(it);
+				}
+			}
 
-			isCombatOver = true;
-			endCombat = true;
+			//Vérifier si il y a des potions disponible
+			if (!potionList.empty()) {
+				//Utiliser la dernière potion de la liste (donc la première qui avait été ajouté dans l'inventaire)
+				
+				Object* potion = NULL;
+				//Défiler jusqu'a la derniere potion
+				for (Object* it : potionList) {
+					potion = it;
+				}
+				//Redonner la vie
+				this->player->setHealthPoint(potion->getHealthPoint());
+				//Supprimer la potion de la liste et de l'inventaire
+				this->potionList.remove(potion);
+				this->player->inventory.remove(potion);
 
-			textCombatStatus.setString("You lost ...");
-			textCombatStatus.setOrigin(Vector2f((this->textCombatStatus.getGlobalBounds().width) / 2, (this->textCombatStatus.getGlobalBounds().height) / 2));
-			textCombatStatus.setPosition((this->gameData->window.getSize().x) / 2, ((this->gameData->window.getSize().y) / 2)-100);
+				//Informer le joueur qu'une potion a été utilisée
+				cout << "Potion utilisé" << endl;
+			}
+			else {
+				//Si il n'y a plus de potions disponible, mourir
+				cout << "Vous avez perdu" << endl;
+
+				cout << "Combat fini" << endl;
+				this->combatEndDelay.restart();
+
+				isCombatOver = true;
+				endCombat = true;
+
+				textCombatStatus.setString("You lost ...");
+				textCombatStatus.setOrigin(Vector2f((this->textCombatStatus.getGlobalBounds().width) / 2, (this->textCombatStatus.getGlobalBounds().height) / 2));
+				textCombatStatus.setPosition((this->gameData->window.getSize().x) / 2, ((this->gameData->window.getSize().y) / 2) - 100);
+			}
 		}
 
+		//Defaite de l'ennemi
 		if (this->ennemy->getHealthPoint() <= 0) {
 			cout << "Vous avez gagne" << endl;
 
@@ -310,7 +340,7 @@ namespace TP3
 		}
 		
 		if (isCombatOver && combatEndDelay.getElapsedTime().asMilliseconds() > 2000) {
-			this->gameData->machine.removeState();
+			this->gameData->machine.addState(StateRef(new GameOverState(this->gameData)), true);
 		}
 	}
 

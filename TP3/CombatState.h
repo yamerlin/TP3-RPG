@@ -4,9 +4,13 @@
 #include <SFML/System.hpp>
 #include <cstdlib>
 #include <iostream>
+#include "PauseState.h"
+#include "GameOverState.h"
 #include "State.h"
 #include "Game.h"
 #include "Character.h"
+#include "Object.h"
+#include "Potion.h"
 
 using namespace sf;
 
@@ -15,7 +19,7 @@ namespace TP3
 	class CombatState : public State
 	{
 	public:
-		CombatState(GameDataRef data, Character* joueur, Character* ennemi);
+		CombatState(GameDataRef data, Character* joueur, Character* ennemi/*, list<Object*> potionList*/);
 
 		void init();
 		void handleInput();
@@ -35,6 +39,9 @@ namespace TP3
 
 		//Clock pour avoir un delai en fin de match
 		Clock combatEndDelay;
+
+		//Liste des potions disponibles
+		list<Object*> potionList;
 
 		GameDataRef gameData;
 

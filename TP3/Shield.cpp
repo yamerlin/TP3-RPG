@@ -9,6 +9,7 @@ namespace TP3 {
 		this->canEquip = true;
 		this->isEquiped = false;
 		this->type = 1;
+		this->isPotion = false;
 
 		//Setter la texture
 		if (!this->textureObject.loadFromFile("Textures/shieldObject1.png")) {

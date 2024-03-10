@@ -260,7 +260,8 @@ namespace TP3
 					cout << "Combat !" << endl;
 					ennemyArray[i]->isFighted = true;
 
-					this->gameData->machine.addState(StateRef(new CombatState(this->gameData, this->player, this->ennemyArray[i])), false);
+					/*this->createPotionList();*/
+					this->gameData->machine.addState(StateRef(new CombatState(this->gameData, this->player, this->ennemyArray[i]/*, this->potionList*/)), false);
 				}
 				else {
 					cout << "Ennemi deja combattu !" << endl;
@@ -310,13 +311,13 @@ namespace TP3
 	//Retourne true si un ennemi a été vaincu et si il n'a pas déjà été looté
 	void GameState::lootDefeatedEnnemy()
 	{
-		random.restart();
+		random2.restart();
 		for (int i = 0; i < 3; i++) {
 			if (ennemyArray[i]->isFighted && !ennemyArray[i]->isLooted) {
 				ennemyArray[i]->isLooted = true;
 
 				//Création d'un loot alléatoire
-				srand(this->random.getElapsedTime().asMicroseconds());
+				srand(this->random.getElapsedTime().asMicroseconds() + this->random2.getElapsedTime().asMicroseconds());
 				int randomObject = rand() % 3;
 
 				//0 = Potion
@@ -336,6 +337,15 @@ namespace TP3
 			}
 		}
 	}
+
+	//void GameState::createPotionList() {
+	//	for (Object* it : this->player->inventory) {
+	//		//On requpére seulement les potions qui sont dans l'inventaire
+	//		if (it->isPotion) {
+	//			this->potionList.push_front(it);
+	//		}
+	//	}
+	//}
 
 	void GameState::update(float dt)
 	{
