@@ -13,6 +13,7 @@ namespace TP3
 	void CombatState::init()
 	{
 		this->isCombatOver = false;
+		this->potionUsed = false;
 
 		//Charger la texture du background
 		if (!this->textureUI.loadFromFile("Textures/combat.png")) {
@@ -100,6 +101,16 @@ namespace TP3
 		textStatsDefense.setString("Your defense points : " + to_string(this->player->getDefensePoint()));
 		textStatsDefense.setPosition(445, 715);
 
+		//Text qui s'affiche quand on utilise une potion
+		textUsedPotion.setFont(font);
+		textUsedPotion.setCharacterSize(30);
+		textUsedPotion.setString("You used a potion !");
+		textUsedPotion.setOrigin(Vector2f((this->textUsedPotion.getLocalBounds().width) / 2, (this->textUsedPotion.getLocalBounds().height) / 2));
+		textUsedPotion.setFillColor(Color::Black);
+		textUsedPotion.setOutlineThickness(5.f);
+		textUsedPotion.setOutlineColor(Color::White);
+		textUsedPotion.setPosition((this->gameData->window.getSize().x)/2, 80);
+
 		//Initialiser le text de status du combat; gagné ou perdu
 		textCombatStatus.setFont(font);
 		textCombatStatus.setFillColor(Color::Red);
@@ -176,6 +187,8 @@ namespace TP3
 
 				//Informer le joueur qu'une potion a été utilisée
 				cout << "Potion utilisé" << endl;
+				this->potionUsed = true;
+				this->displayUsedPotionDelay.restart();
 			}
 			else {
 				//Si il n'y a plus de potions disponible, mourir
@@ -339,8 +352,18 @@ namespace TP3
 			checkIfSomeoneLost();
 		}
 		
+		//Mettre fin au combat
 		if (isCombatOver && combatEndDelay.getElapsedTime().asMilliseconds() > 2000) {
-			this->gameData->machine.addState(StateRef(new GameOverState(this->gameData)), true);
+			cout << "Point de vie restant : " << this->player->getHealthPoint() <<endl;
+			
+			//En cas de défaite, afficher l'écran game over
+			if (this->player->getHealthPoint() <= 0) {
+				this->gameData->machine.addState(StateRef(new GameOverState(this->gameData)), true);
+			}
+			else{
+				//En cas de victoire, revenir sur la map
+				this->gameData->machine.removeState();
+			}
 		}
 	}
 
@@ -369,6 +392,14 @@ namespace TP3
 
 		//Status du combat
 		this->gameData->window.draw(this->textCombatStatus);
+
+		//Afficher le texte d'utilisation d'une potion
+		if (potionUsed && displayUsedPotionDelay.getElapsedTime().asMilliseconds() < 1200) {
+			this->gameData->window.draw(this->textUsedPotion);
+		}
+		else {
+			this->potionUsed = false;
+		}
 
 		this->gameData->window.display();
 	}

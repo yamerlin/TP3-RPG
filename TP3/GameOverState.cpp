@@ -44,7 +44,6 @@ namespace TP3
 		this->spriteButtonQuit.setScale(buttonScaleX, buttonScaleY);
 
 
-
 		//Charger la police de text
 		if (!font.loadFromFile("Textures/FontPixel.ttf"))
 		{

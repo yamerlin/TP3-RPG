@@ -40,6 +40,8 @@ namespace TP3
 		//Clock pour avoir un delai en fin de match
 		Clock combatEndDelay;
 
+		Clock displayUsedPotionDelay;
+
 		//Liste des potions disponibles
 		list<Object*> potionList;
 
@@ -55,6 +57,7 @@ namespace TP3
 		Text textAttack;
 		Text textStatsAttack;
 		Text textStatsDefense;
+		Text textUsedPotion;
 
 		Text textCombatStatus; //Gagné ou perdu
 
@@ -75,6 +78,7 @@ namespace TP3
 
 		int playerTurn;
 		bool isCombatOver;
+		bool potionUsed;
 
 		bool checkIfMouseIsOverButton(int posX, int posY);
 		void changeTurn();
